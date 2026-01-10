@@ -1,0 +1,130 @@
+{
+  "recipes": [
+    {
+      "id": "001",
+      "title": "One-Pot Smoky Coriander Chicken & Rice with Esquites",
+      "ingredients": ["chicken", "red pepper", "rice"],
+      "nutrition": {
+        "calories": "558kcal",
+        "protein": "46g",
+        "carbs": "68g",
+        "fat": "11g"
+      },
+      "tags": ["One-Pot", "Chicken", "Rice"],
+      "image_front": "images/one_pot_smokey_chicken_front.webp",
+      "image_back": "images/one_pot_smokey_chicken_back.webp"
+    },
+    {
+      "id": "002",
+      "title": "Creamy Chicken & Pesto Penne With Basil",
+      "ingredients": ["chicken", "pesto", "pasta"],
+      "nutrition": {
+        "calories": "733kcal",
+        "protein": "48g",
+        "carbs": "74g",
+        "fat": "27g"
+      },
+      "tags": ["Pesto", "Chicken", "Pasta"],
+      "image_front": "images/chicken_pesto_pasta_front.webp",
+      "image_back": "images/chicken_pesto_pasta_back.webp"
+    },
+    {
+      "id": "003",
+      "title": "Beef Meatballs with Creamy Linguine",
+      "ingredients": ["beef", "pasta"],
+      "nutrition": {
+        "calories": "830kcal",
+        "protein": "48g",
+        "carbs": "74g",
+        "fat": "37g"
+      },
+      "tags": ["Beef", "Pasta"],
+      "image_front": "images/meatball_tagliatelle_front.webp",
+      "image_back": "images/meatball_tagliatelle_back.webp"
+    },
+    {
+      "id": "004",
+      "title": "Sausage Curry, Coriander Rice & Naan",
+      "ingredients": ["sausage", "curry", "rice"],
+      "nutrition": {
+        "calories": "745kcal",
+        "protein": "28g",
+        "carbs": "93g",
+        "fat": "29g"
+      },
+      "tags": ["Sausage", "Curry", "Rice"],
+      "image_front": "images/sausage_curry_front.webp",
+      "image_back": "images/sausage_curry_back.webp"
+    },
+    {
+      "id": "005",
+      "title": "Indonesian Style Chicken Rendang",
+      "ingredients": ["chicken", "curry", "rendang", "rice"],
+      "nutrition": {
+        "calories": "589kcal",
+        "protein": "36g",
+        "carbs": "61g",
+        "fat": "20g"
+      },
+      "tags": ["Chicken", "Curry", "Rice"],
+      "image_front": "images/rendang_curry_front.webp",
+      "image_back": "images/rendang_curry_back.webp"
+    },
+    {
+      "id": "006",
+      "title": "Brazilian Haddock Moqueca & Zesty Lime Rice",
+      "ingredients": ["fish", "curry", "rice"],
+      "nutrition": {
+        "calories": "546kcal",
+        "protein": "28g",
+        "carbs": "61g",
+        "fat": "20g"
+      },
+      "tags": ["Fish", "Curry", "Rice"],
+      "image_front": "images/fish_moqueca_curry_front.webp",
+      "image_back": "images/fish_moqueca_curry_back.webp"
+    },
+    {
+      "id": "007",
+      "title": "Beef Spaghetti Bolognese",
+      "ingredients": ["beef", "pasta"],
+      "nutrition": {
+        "calories": "834kcal",
+        "protein": "46g",
+        "carbs": "90g",
+        "fat": "31g"
+      },
+      "tags": ["Beef", "Pasta"],
+      "image_front": "images/spag_bol_front.webp",
+      "image_back": "images/spag_bol_back.webp"
+    },
+    {
+      "id": "008",
+      "title": "One-Pot Cheesy Chorizo Risotto",
+      "ingredients": ["rice", "risotto", "chorizo"],
+      "nutrition": {
+        "calories": "599kcal",
+        "protein": "23g",
+        "carbs": "71g",
+        "fat": "24g"
+      },
+      "tags": ["Rice", "Risotto", "Chorizo"],
+      "image_front": "images/cheese_chorizo_front.webp",
+      "image_back": "images/cheese_chorizo_back.webp"
+    },
+    {
+      "id": "009",
+      "title": "Lamb Keema With Spinach",
+      "ingredients": ["lamb", "spinach", "rice"],
+      "nutrition": {
+        "calories": "615kcal",
+        "protein": "35g",
+        "carbs": "51g",
+        "fat": "29g"
+      },
+      "tags": ["Lamb", "Spinach", "Rice", "Quick", "Fast"],
+      "image_front": "images/lamb_keema_front.webp",
+      "image_back": "images/lamb_keema_back.webp"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+:root { --primary: #ed1c24; --bg: #f4f4f4; }
+body { font-family: -apple-system, system-ui; background: var(--bg); margin: 0; padding: 20px; padding-top: 60px; }
+body.no-scroll { overflow: hidden; }
+
+/* Search Icon */
+#search-icon {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 100;
+    background: white;
+    padding: 10px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Search Overlay */
+#search-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+#search-overlay.open {
+    display: flex;
+}
+
+#search-input {
+    width: 80%;
+    max-width: 600px;
+    padding: 20px;
+    border-radius: 10px;
+    border: none;
+    font-size: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+/* 3D Flip Animation */
+.recipe-card { height: 450px; perspective: 1000px; cursor: pointer; }
+.card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+.recipe-card.flipped .card-inner { transform: rotateY(180deg); }
+
+.card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; overflow: hidden; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.card-back { transform: rotateY(180deg); }
+
+img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+
+.nutrition-bar { position: absolute; bottom: 0; background: rgba(255,255,255,0.9); width: 100%; padding: 10px; display: flex; justify-content: space-around; font-size: 12px; border-top: 1px solid #eee; }
+
+/* Fullscreen Stage */
+#fullscreen-viewer {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    perspective: 2000px; /* Essential for 3D depth */
+}
+
+#fullscreen-viewer.open {
+    display: flex;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+/* The 3D Card Container */
+.fullscreen-card {
+    width: 90vw;
+    height: 80vh;
+    max-width: 1000px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+/* Toggle this class via JS to flip */
+.fullscreen-card.is-flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Hides the other side when flipped */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    overflow: hidden;
+    background: white;
+}
+
+.card-face.back {
+    transform: rotateY(180deg);
+}
+
+.card-face img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

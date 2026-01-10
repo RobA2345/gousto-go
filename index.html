@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gousto Archive</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="search-icon">🔍</div>
+
+<div id="search-overlay">
+    <input type="text" id="search-input" placeholder="Search ingredients or titles..." autofocus>
+</div>
+
+<div id="fullscreen-viewer">
+    <div class="close-btn">&times;</div>
+
+    <div id="fs-card" class="fullscreen-card">
+        <div class="card-face front">
+            <img id="fs-img-front" src="" alt="Ingredients">
+        </div>
+        <div class="card-face back">
+            <img id="fs-img-back" src="" alt="Method">
+        </div>
+    </div>
+</div>
+
+<div id="recipe-grid" class="grid"></div>
+
+<script>
+    let allRecipes = [];
+
+    async function init() {
+        const resp = await fetch('data.json');
+        const data = await resp.json();
+        allRecipes = data.recipes;
+        render(allRecipes);
+    }
+
+    function render(list) {
+        const grid = document.getElementById('recipe-grid');
+        grid.innerHTML = list.map(r => `
+                <div class="recipe-card" data-front="${r.image_front}" data-back="${r.image_back}">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="${r.image_front}" alt="Front">
+                            <div class="nutrition-bar">
+                                <span>🔥 ${r.nutrition.calories}</span>
+                                <span>💪 ${r.nutrition.protein}</span>
+                                <span>🍞 ${r.nutrition.carbs}</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <img src="${r.image_back}" alt="Back">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    function openFullscreen(frontSrc, backSrc) {
+        const viewer = document.getElementById('fullscreen-viewer');
+        const card = document.getElementById('fs-card');
+
+        // Reset flip state so it always opens on the front
+        card.classList.remove('is-flipped');
+
+        document.getElementById('fs-img-front').src = frontSrc;
+        document.getElementById('fs-img-back').src = backSrc;
+
+        viewer.classList.add('open');
+        document.body.classList.add('no-scroll');
+    }
+
+    function toggleFlip(event) {
+        // Prevent the close button or background clicks from triggering this
+        event.stopPropagation();
+        const card = document.getElementById('fs-card');
+        card.classList.toggle('is-flipped');
+    }
+
+    function closeFullscreen() {
+        document.getElementById('fullscreen-viewer').classList.remove('open');
+        document.body.classList.remove('no-scroll');
+    }
+
+    function openSearch() {
+        const overlay = document.getElementById('search-overlay');
+        const input = document.getElementById('search-input');
+        overlay.classList.add('open');
+        input.focus();
+    }
+
+    function closeSearch() {
+        document.getElementById('search-overlay').classList.remove('open');
+    }
+
+    // Event Listeners
+    document.getElementById('recipe-grid').addEventListener('click', (e) => {
+        const card = e.target.closest('.recipe-card');
+        if (card) {
+            openFullscreen(card.dataset.front, card.dataset.back);
+        }
+    });
+
+    document.querySelector('.close-btn').addEventListener('click', closeFullscreen);
+    document.getElementById('fs-card').addEventListener('click', toggleFlip);
+
+    // Search Logic
+    document.getElementById('search-icon').addEventListener('click', openSearch);
+
+    document.getElementById('search-overlay').addEventListener('click', (e) => {
+        if (e.target.id === 'search-overlay') closeSearch();
+    });
+
+    document.getElementById('search-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            closeSearch();
+        } else if (e.key === 'Escape') {
+            e.target.value = '';
+            render(allRecipes); // Reset grid
+            closeSearch();
+        }
+    });
+
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase();
+        const filtered = allRecipes.filter(r =>
+            r.title.toLowerCase().includes(q) ||
+            r.ingredients.some(i => i.toLowerCase().includes(q))
+        );
+        render(filtered);
+    });
+
+    // Global Keydown
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape") {
+            // Close fullscreen if open
+            if (document.getElementById('fullscreen-viewer').classList.contains('open')) {
+                closeFullscreen();
+            }
+            // Close search if open
+            if (document.getElementById('search-overlay').classList.contains('open')) {
+                document.getElementById('search-input').value = '';
+                render(allRecipes);
+                closeSearch();
+            }
+        }
+    });
+
+    init();
+
+    // Register Service Worker for Offline Use
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+    }
+</script>
+</body>
+</html>
