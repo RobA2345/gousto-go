@@ -125,6 +125,202 @@
       "tags": ["Lamb", "Spinach", "Rice", "Quick", "Fast"],
       "image_front": "images/lamb_keema_front.webp",
       "image_back": "images/lamb_keema_back.webp"
+    },
+    {
+      "id": "010",
+      "title": "Indonesian Inspired Pork Noodles",
+      "ingredients": ["pork", "noodles"],
+      "nutrition": {
+        "calories": "712kcal",
+        "protein": "34g",
+        "carbs": "78g",
+        "fat": "29g"
+      },
+      "tags": ["Pork", "Noodles", "Quick", "Fast"],
+      "image_front": "images/indo_pork_noodles_front.webp",
+      "image_back": "images/indo_pork_noodles_back.webp"
+    },
+    {
+      "id": "011",
+      "title": "Spicy Cajun Beef & Pork Pepper Rigatoni",
+      "ingredients": ["pork", "pasta", "beef"],
+      "nutrition": {
+        "calories": "854kcal",
+        "protein": "42g",
+        "carbs": "80g",
+        "fat": "39g"
+      },
+      "tags": ["Pork", "Pasta", "Beef", "Quick", "Fast"],
+      "image_front": "images/speedy_cajun_beef_front.webp",
+      "image_back": "images/speedy_cajun_beef_back.webp"
+    },
+    {
+      "id": "012",
+      "title": "Chipotle Black Bean Enchiladas",
+      "ingredients": ["beans", "pepper"],
+      "nutrition": {
+        "calories": "854kcal",
+        "protein": "42g",
+        "carbs": "80g",
+        "fat": "39g"
+      },
+      "tags": ["Beans", "Mexican", "Enchiladas"],
+      "image_front": "images/bean_enchiladas_front.webp",
+      "image_back": "images/bean_enchiladas_back.webp"
+    },
+    {
+      "id": "013",
+      "title": "Bacon & Mushroom Linguine",
+      "ingredients": ["bacon", "mushroom", "pasta"],
+      "nutrition": {
+        "calories": "708kcal",
+        "protein": "24g",
+        "carbs": "74g",
+        "fat": "34g"
+      },
+      "tags": ["Bacon", "Mushroom", "Pasta", "Quick", "Fast"],
+      "image_front": "images/bacon_mushroom_pasta_front.webp",
+      "image_back": "images/bacon_mushroom_pasta_back.webp"
+    },
+    {
+      "id": "014",
+      "title": "Teriyaki Sesame Chicken",
+      "ingredients": ["rice", "chicken"],
+      "nutrition": {
+        "calories": "574kcal",
+        "protein": "40g",
+        "carbs": "90g",
+        "fat": "5g"
+      },
+      "tags": ["Rice", "Chicken", "Quick", "Fast"],
+      "image_front": "images/chicken_teriyaki_front.webp",
+      "image_back": "images/chicken_teriyaki_back.webp"
+    },
+    {
+      "id": "015",
+      "title": "Peri Peri Chicken Breast Traybake",
+      "ingredients": ["chicken", "potato"],
+      "nutrition": {
+        "calories": "659kcal",
+        "protein": "37g",
+        "carbs": "59g",
+        "fat": "25g"
+      },
+      "tags": ["Chicken", "Potato"],
+      "image_front": "images/peri_peri_chicken_front.webp",
+      "image_back": "images/peri_peri_chicken_back.webp"
+    },
+    {
+      "id": "016",
+      "title": "One Pot Beef & Pork Keema Aloo",
+      "ingredients": ["beef", "pork", "aloo"],
+      "nutrition": {
+        "calories": "1057kcal",
+        "protein": "43g",
+        "carbs": "119g",
+        "fat": "44g"
+      },
+      "tags": ["Beef", "Pork", "Aloo", "One-Pot"],
+      "image_front": "images/beef_pork_aloo_front.webp",
+      "image_back": "images/beef_pork_aloo_back.webp"
+    },
+    {
+      "id": "017",
+      "title": "Honey Sesame Beef & Pork Stir Fry",
+      "ingredients": ["beef", "pork"],
+      "nutrition": {
+        "calories": "687kcal",
+        "protein": "35g",
+        "carbs": "76g",
+        "fat": "25g"
+      },
+      "tags": ["Beef", "Pork"],
+      "image_front": "images/beef_pork_stir_fry_front.webp",
+      "image_back": "images/beef_pork_stir_fry_back.webp"
+    },
+    {
+      "id": "018",
+      "title": "Oven Baked Bacon White Wine & Mushroom Risotto",
+      "ingredients": ["bacon", "wine", "mushroom"],
+      "nutrition": {
+        "calories": "637kcal",
+        "protein": "23g",
+        "carbs": "83g",
+        "fat": "19g"
+      },
+      "tags": ["Bacon", "Wine", "Mushroom"],
+      "image_front": "images/bacon_wine_mushroom_front.webp",
+      "image_back": "images/bacon_wine_mushroom_back.webp"
+    },
+    {
+      "id": "019",
+      "title": "Chicken in Creamy Peppercorn Sauce",
+      "ingredients": ["chicken", "potato"],
+      "nutrition": {
+        "calories": "563kcal",
+        "protein": "41g",
+        "carbs": "66g",
+        "fat": "19g"
+      },
+      "tags": ["Chicken", "Potato"],
+      "image_front": "images/chicken_potato_front.webp",
+      "image_back": "images/chicken_potato_back.webp"
+    },
+    {
+      "id": "020",
+      "title": "Creamy Chickpea Korma",
+      "ingredients": ["chickpea", "rice"],
+      "nutrition": {
+        "calories": "788kcal",
+        "protein": "20g",
+        "carbs": "105g",
+        "fat": "32g"
+      },
+      "tags": ["Chickpea", "Rice", "Curry"],
+      "image_front": "images/chickpea_korma_front.webp",
+      "image_back": "images/chickpea_korma_back.webp"
+    },
+    {
+      "id": "021",
+      "title": "Curried Lentil & Chicken Soup With Garlic Roti",
+      "ingredients": ["chicken", "lentil", "roti"],
+      "nutrition": {
+        "calories": "717kcal",
+        "protein": "55g",
+        "carbs": "99g",
+        "fat": "11g"
+      },
+      "tags": ["Chicken", "Lentil", "Roti"],
+      "image_front": "images/chicken_lentil_roti_front.webp",
+      "image_back": "images/chicken_lentil_roti_back.webp"
+    },
+    {
+      "id": "022",
+      "title": "Crispy Sausage & Tomato Risotto With Baby Kale",
+      "ingredients": ["sausage", "kale", "rice", "risotto"],
+      "nutrition": {
+        "calories": "765kcal",
+        "protein": "29g",
+        "carbs": "91g",
+        "fat": "33g"
+      },
+      "tags": ["Sausage", "Kale", "Rice", "Risotto"],
+      "image_front": "images/sausage_kale_risotto_front.webp",
+      "image_back": "images/sausage_kale_risotto_back.webp"
+    },
+    {
+      "id": "023",
+      "title": "Creamy Truffle Mushroom Naanizza",
+      "ingredients": ["chips", "mushroom", "naan"],
+      "nutrition": {
+        "calories": "901kcal",
+        "protein": "23g",
+        "carbs": "116g",
+        "fat": "38g"
+      },
+      "tags": ["Chips", "Mushroom", "Naan"],
+      "image_front": "images/chips_mushroom_naan_front.webp",
+      "image_back": "images/chips_mushroom_naan_back.webp"
     }
   ]
 }
