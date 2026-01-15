@@ -1,12 +1,11 @@
 :root { --primary: #ed1c24; --bg: #f4f4f4; }
-body { font-family: -apple-system, system-ui; background: var(--bg); margin: 0; padding: 20px; padding-top: 60px; }
+body { font-family: -apple-system, system-ui; background: var(--bg); margin: 0; padding: 20px; padding-top: 80px; }
 body.no-scroll { overflow: hidden; }
 
-/* Search Icon */
-#search-icon {
+/* Header Icons */
+.header-icon {
     position: fixed;
     top: 15px;
-    right: 20px;
     font-size: 24px;
     cursor: pointer;
     z-index: 100;
@@ -14,6 +13,24 @@ body.no-scroll { overflow: hidden; }
     padding: 10px;
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#search-icon {
+    right: 20px;
+}
+
+#view-toggle {
+    right: 80px;
+}
+
+#bmc-icon {
+    left: 20px;
+    background: #FFDD00; /* BMC Brand Color */
 }
 
 /* Search Overlay */
@@ -46,7 +63,7 @@ body.no-scroll { overflow: hidden; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 
-/* 3D Flip Animation */
+/* 3D Flip Animation (Grid View) */
 .recipe-card { height: 450px; perspective: 1000px; cursor: pointer; }
 .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
 .recipe-card.flipped .card-inner { transform: rotateY(180deg); }
@@ -57,6 +74,55 @@ body.no-scroll { overflow: hidden; }
 img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
 
 .nutrition-bar { position: absolute; bottom: 0; background: rgba(255,255,255,0.9); width: 100%; padding: 10px; display: flex; justify-content: space-around; font-size: 12px; border-top: 1px solid #eee; }
+
+.recipe-title { display: none; }
+
+/* List View Overrides */
+.grid.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.grid.list-view .recipe-card {
+    height: auto;
+    perspective: none;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.grid.list-view .card-inner {
+    position: relative;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.grid.list-view .card-front {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+.grid.list-view .card-back { display: none; }
+.grid.list-view .nutrition-bar { display: none; }
+
+.grid.list-view .recipe-title {
+    display: block;
+    margin-left: 20px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+}
 
 /* Fullscreen Stage */
 #fullscreen-viewer {
@@ -123,4 +189,108 @@ img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+/* Shop Button */
+#shop-btn {
+    position: absolute;
+    bottom: 30px;
+    background: var(--primary);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 1002;
+    border: none;
+}
+
+#shop-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Shopping List Overlay */
+#shopping-list-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 3000;
+    justify-content: center;
+    align-items: center;
+}
+
+#shopping-list-overlay.open {
+    display: flex;
+}
+
+.shopping-list-modal {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.shopping-list-modal h2 {
+    margin-top: 0;
+    color: var(--primary);
+    text-align: center;
+}
+
+.shopping-list-items {
+    flex: 1;
+    overflow-y: auto;
+    margin: 20px 0;
+}
+
+.shopping-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 16px;
+}
+
+.shopping-item input[type="checkbox"] {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+}
+
+/* Strikethrough when NOT checked (unchecked means "I don't need this") */
+.shopping-item.unchecked span {
+    text-decoration: line-through;
+    color: #999;
+}
+
+#make-list-btn {
+    background: var(--primary);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #666;
 }

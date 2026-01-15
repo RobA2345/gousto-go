@@ -8,10 +8,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="search-icon">🔍</div>
+<div id="view-toggle" class="header-icon">📋</div>
+<div id="search-icon" class="header-icon">🔍</div>
+<a href="https://www.buymeacoffee.com/robertlindley" target="_blank" id="bmc-icon" class="header-icon">☕</a>
 
 <div id="search-overlay">
     <input type="text" id="search-input" placeholder="Search ingredients or titles..." autofocus>
+</div>
+
+<div id="shopping-list-overlay">
+    <div class="shopping-list-modal">
+        <div class="modal-close" onclick="closeShoppingList()">&times;</div>
+        <h2>Shopping List</h2>
+        <div id="shopping-list-items" class="shopping-list-items"></div>
+        <button id="make-list-btn">Share / Copy List</button>
+    </div>
 </div>
 
 <div id="fullscreen-viewer">
@@ -25,12 +36,15 @@
             <img id="fs-img-back" src="" alt="Method">
         </div>
     </div>
+    <button id="shop-btn">Shop Ingredients</button>
 </div>
 
 <div id="recipe-grid" class="grid"></div>
 
 <script>
     let allRecipes = [];
+    let isListView = false;
+    let currentRecipe = null;
 
     async function init() {
         const resp = await fetch('data.json');
@@ -42,7 +56,7 @@
     function render(list) {
         const grid = document.getElementById('recipe-grid');
         grid.innerHTML = list.map(r => `
-                <div class="recipe-card" data-front="${r.image_front}" data-back="${r.image_back}">
+                <div class="recipe-card" data-id="${r.id}">
                     <div class="card-inner">
                         <div class="card-front">
                             <img src="${r.image_front}" alt="Front">
@@ -55,20 +69,38 @@
                         <div class="card-back">
                             <img src="${r.image_back}" alt="Back">
                         </div>
+                        <div class="recipe-title">${r.title}</div>
                     </div>
                 </div>
             `).join('');
     }
 
-    function openFullscreen(frontSrc, backSrc) {
+    function toggleView() {
+        isListView = !isListView;
+        const grid = document.getElementById('recipe-grid');
+        const toggleBtn = document.getElementById('view-toggle');
+
+        if (isListView) {
+            grid.classList.add('list-view');
+            toggleBtn.textContent = '▦'; // Switch icon to grid
+        } else {
+            grid.classList.remove('list-view');
+            toggleBtn.textContent = '📋'; // Switch icon to list
+        }
+    }
+
+    function openFullscreen(recipeId) {
+        currentRecipe = allRecipes.find(r => r.id === recipeId);
+        if (!currentRecipe) return;
+
         const viewer = document.getElementById('fullscreen-viewer');
         const card = document.getElementById('fs-card');
 
         // Reset flip state so it always opens on the front
         card.classList.remove('is-flipped');
 
-        document.getElementById('fs-img-front').src = frontSrc;
-        document.getElementById('fs-img-back').src = backSrc;
+        document.getElementById('fs-img-front').src = currentRecipe.image_front;
+        document.getElementById('fs-img-back').src = currentRecipe.image_back;
 
         viewer.classList.add('open');
         document.body.classList.add('no-scroll');
@@ -84,6 +116,7 @@
     function closeFullscreen() {
         document.getElementById('fullscreen-viewer').classList.remove('open');
         document.body.classList.remove('no-scroll');
+        currentRecipe = null;
     }
 
     function openSearch() {
@@ -97,16 +130,103 @@
         document.getElementById('search-overlay').classList.remove('open');
     }
 
+    function openShoppingList() {
+        if (!currentRecipe) return;
+
+        const overlay = document.getElementById('shopping-list-overlay');
+        const listContainer = document.getElementById('shopping-list-items');
+
+        listContainer.innerHTML = currentRecipe.ingredients.map((ing, index) => `
+            <div class="shopping-item" onclick="toggleItem(this)">
+                <input type="checkbox" checked onclick="event.stopPropagation(); toggleItem(this.parentElement)">
+                <span>${ing}</span>
+            </div>
+        `).join('');
+
+        overlay.classList.add('open');
+    }
+
+    window.closeShoppingList = function() {
+        document.getElementById('shopping-list-overlay').classList.remove('open');
+    }
+
+    window.toggleItem = function(el) {
+        // Handle both the div click and checkbox click
+        const item = el.classList.contains('shopping-item') ? el : el.closest('.shopping-item');
+        const checkbox = item.querySelector('input[type="checkbox"]');
+
+        // If clicked via div, toggle checkbox
+        if (event.target !== checkbox) {
+            checkbox.checked = !checkbox.checked;
+        }
+
+        // Logic: Unchecked means "I don't need this" -> strikethrough
+        if (!checkbox.checked) {
+            item.classList.add('unchecked');
+        } else {
+            item.classList.remove('unchecked');
+        }
+    }
+
     // Event Listeners
     document.getElementById('recipe-grid').addEventListener('click', (e) => {
         const card = e.target.closest('.recipe-card');
         if (card) {
-            openFullscreen(card.dataset.front, card.dataset.back);
+            openFullscreen(card.dataset.id);
         }
     });
 
     document.querySelector('.close-btn').addEventListener('click', closeFullscreen);
     document.getElementById('fs-card').addEventListener('click', toggleFlip);
+    document.getElementById('shop-btn').addEventListener('click', openShoppingList);
+
+    document.getElementById('shopping-list-overlay').addEventListener('click', (e) => {
+        if (e.target.id === 'shopping-list-overlay') closeShoppingList();
+    });
+
+    // Make List / Share Logic
+    document.getElementById('make-list-btn').addEventListener('click', async () => {
+        // 1. Gather checked items
+        const checkedItems = [];
+        document.querySelectorAll('.shopping-item input[type="checkbox"]').forEach(cb => {
+            if (cb.checked) {
+                // Find the span text sibling
+                const text = cb.parentElement.querySelector('span').textContent;
+                checkedItems.push(text);
+            }
+        });
+
+        if (checkedItems.length === 0) {
+            alert("No items selected!");
+            return;
+        }
+
+        const listText = `Shopping List for ${currentRecipe.title}:\n\n` + checkedItems.map(item => `- [ ] ${item}`).join('\n');
+
+        // 2. Try Web Share API
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Gousto Shopping List',
+                    text: listText,
+                });
+            } catch (err) {
+                // User cancelled or share failed
+                console.log('Share failed:', err);
+            }
+        } else {
+            // 3. Fallback to Clipboard
+            try {
+                await navigator.clipboard.writeText(listText);
+                alert("List copied to clipboard! You can now paste it into your notes app.");
+            } catch (err) {
+                alert("Could not share or copy list.");
+            }
+        }
+    });
+
+    // View Toggle
+    document.getElementById('view-toggle').addEventListener('click', toggleView);
 
     // Search Logic
     document.getElementById('search-icon').addEventListener('click', openSearch);
@@ -137,6 +257,11 @@
     // Global Keydown
     document.addEventListener('keydown', (e) => {
         if (e.key === "Escape") {
+            // Close shopping list if open
+            if (document.getElementById('shopping-list-overlay').classList.contains('open')) {
+                closeShoppingList();
+                return;
+            }
             // Close fullscreen if open
             if (document.getElementById('fullscreen-viewer').classList.contains('open')) {
                 closeFullscreen();
