@@ -9,11 +9,23 @@
 </head>
 <body>
 <div id="view-toggle" class="header-icon">📋</div>
+<div id="sort-icon" class="header-icon">⇅</div>
 <div id="search-icon" class="header-icon">🔍</div>
 <a href="https://www.buymeacoffee.com/robertlindley" target="_blank" id="bmc-icon" class="header-icon">☕</a>
 
 <div id="search-overlay">
     <input type="text" id="search-input" placeholder="Search ingredients or titles..." autofocus>
+</div>
+
+<div id="sort-overlay">
+    <div class="sort-modal">
+        <div class="modal-close" onclick="closeSort()">&times;</div>
+        <h2>Sort Recipes</h2>
+        <div class="sort-option" onclick="applySort('title-asc')">Name (A-Z)</div>
+        <div class="sort-option" onclick="applySort('title-desc')">Name (Z-A)</div>
+        <div class="sort-option" onclick="applySort('kcal-asc')">Calories (Low-High)</div>
+        <div class="sort-option" onclick="applySort('kcal-desc')">Calories (High-Low)</div>
+    </div>
 </div>
 
 <div id="shopping-list-overlay">
@@ -43,20 +55,52 @@
 
 <script>
     let allRecipes = [];
+    let currentRecipes = []; // To track filtered/sorted state
+    let pinnedRecipeIds = [];
     let isListView = false;
     let currentRecipe = null;
 
     async function init() {
+        // Load pinned recipes from local storage
+        const savedPins = localStorage.getItem('pinnedRecipes');
+        if (savedPins) {
+            pinnedRecipeIds = JSON.parse(savedPins);
+        }
+
         const resp = await fetch('data.json');
         const data = await resp.json();
         allRecipes = data.recipes;
-        render(allRecipes);
+        currentRecipes = [...allRecipes];
+
+        // Initial sort to put pinned items at top
+        sortRecipesWithPins();
+        render(currentRecipes);
+    }
+
+    function sortRecipesWithPins() {
+        // Separate pinned and unpinned
+        const pinned = [];
+        const unpinned = [];
+
+        currentRecipes.forEach(r => {
+            if (pinnedRecipeIds.includes(r.id)) {
+                pinned.push(r);
+            } else {
+                unpinned.push(r);
+            }
+        });
+
+        // Combine: Pinned first, then unpinned
+        currentRecipes = [...pinned, ...unpinned];
     }
 
     function render(list) {
         const grid = document.getElementById('recipe-grid');
-        grid.innerHTML = list.map(r => `
+        grid.innerHTML = list.map(r => {
+            const isPinned = pinnedRecipeIds.includes(r.id);
+            return `
                 <div class="recipe-card" data-id="${r.id}">
+                    <div class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin(event, '${r.id}')">📌</div>
                     <div class="card-inner">
                         <div class="card-front">
                             <img src="${r.image_front}" alt="Front">
@@ -72,7 +116,29 @@
                         <div class="recipe-title">${r.title}</div>
                     </div>
                 </div>
-            `).join('');
+            `;
+        }).join('');
+    }
+
+    window.togglePin = function(event, id) {
+        event.stopPropagation(); // Prevent opening fullscreen
+
+        if (pinnedRecipeIds.includes(id)) {
+            // Unpin
+            pinnedRecipeIds = pinnedRecipeIds.filter(pid => pid !== id);
+        } else {
+            // Pin
+            pinnedRecipeIds.push(id);
+        }
+
+        // Save to local storage
+        localStorage.setItem('pinnedRecipes', JSON.stringify(pinnedRecipeIds));
+
+        // Re-sort and render
+        // We need to re-apply the current sort logic + pin logic
+        // For now, just re-sorting with pins at top is enough, preserving current order of unpinned
+        sortRecipesWithPins();
+        render(currentRecipes);
     }
 
     function toggleView() {
@@ -130,6 +196,40 @@
         document.getElementById('search-overlay').classList.remove('open');
     }
 
+    function openSort() {
+        document.getElementById('sort-overlay').classList.add('open');
+    }
+
+    window.closeSort = function() {
+        document.getElementById('sort-overlay').classList.remove('open');
+    }
+
+    window.applySort = function(type) {
+        // Sort the entire list first based on criteria
+        let sorted = [...currentRecipes];
+
+        // Helper to parse calories (e.g. "558kcal" -> 558)
+        const getKcal = (r) => parseInt(r.nutrition.calories.replace(/\D/g, '')) || 0;
+
+        if (type === 'title-asc') {
+            sorted.sort((a, b) => a.title.localeCompare(b.title));
+        } else if (type === 'title-desc') {
+            sorted.sort((a, b) => b.title.localeCompare(a.title));
+        } else if (type === 'kcal-asc') {
+            sorted.sort((a, b) => getKcal(a) - getKcal(b));
+        } else if (type === 'kcal-desc') {
+            sorted.sort((a, b) => getKcal(b) - getKcal(a));
+        }
+
+        currentRecipes = sorted;
+
+        // Then re-apply pin logic to keep pins at top
+        sortRecipesWithPins();
+
+        render(currentRecipes);
+        closeSort();
+    }
+
     function openShoppingList() {
         if (!currentRecipe) return;
 
@@ -170,9 +270,12 @@
 
     // Event Listeners
     document.getElementById('recipe-grid').addEventListener('click', (e) => {
-        const card = e.target.closest('.recipe-card');
-        if (card) {
-            openFullscreen(card.dataset.id);
+        // Only trigger if we didn't click the pin button
+        if (!e.target.classList.contains('pin-btn')) {
+            const card = e.target.closest('.recipe-card');
+            if (card) {
+                openFullscreen(card.dataset.id);
+            }
         }
     });
 
@@ -182,6 +285,10 @@
 
     document.getElementById('shopping-list-overlay').addEventListener('click', (e) => {
         if (e.target.id === 'shopping-list-overlay') closeShoppingList();
+    });
+
+    document.getElementById('sort-overlay').addEventListener('click', (e) => {
+        if (e.target.id === 'sort-overlay') closeSort();
     });
 
     // Make List / Share Logic
@@ -228,6 +335,9 @@
     // View Toggle
     document.getElementById('view-toggle').addEventListener('click', toggleView);
 
+    // Sort Toggle
+    document.getElementById('sort-icon').addEventListener('click', openSort);
+
     // Search Logic
     document.getElementById('search-icon').addEventListener('click', openSearch);
 
@@ -240,18 +350,47 @@
             closeSearch();
         } else if (e.key === 'Escape') {
             e.target.value = '';
-            render(allRecipes); // Reset grid
+            currentRecipes = [...allRecipes]; // Reset filter
+            sortRecipesWithPins(); // Re-apply pins
+            render(currentRecipes);
             closeSearch();
         }
     });
 
     document.getElementById('search-input').addEventListener('input', (e) => {
         const q = e.target.value.toLowerCase();
-        const filtered = allRecipes.filter(r =>
-            r.title.toLowerCase().includes(q) ||
-            r.ingredients.some(i => i.toLowerCase().includes(q))
-        );
-        render(filtered);
+
+        if (!q) {
+            currentRecipes = [...allRecipes];
+            sortRecipesWithPins();
+            render(currentRecipes);
+            return;
+        }
+
+        // Weighted search: title and tags are more important
+        const titleAndTagMatches = [];
+        const ingredientMatches = [];
+
+        allRecipes.forEach(r => {
+            const titleMatch = r.title.toLowerCase().includes(q);
+            const tagMatch = r.tags.some(t => t.toLowerCase().includes(q));
+
+            if (titleMatch || tagMatch) {
+                titleAndTagMatches.push(r);
+            } else {
+                const ingredientMatch = r.ingredients.some(i => i.toLowerCase().includes(q));
+                if (ingredientMatch) {
+                    ingredientMatches.push(r);
+                }
+            }
+        });
+
+        currentRecipes = [...titleAndTagMatches, ...ingredientMatches];
+        // Note: We generally don't force pins to top during search to keep search relevance high,
+        // but if you want pins at top of search results too, uncomment the next line:
+        // sortRecipesWithPins();
+
+        render(currentRecipes);
     });
 
     // Global Keydown
@@ -262,6 +401,11 @@
                 closeShoppingList();
                 return;
             }
+            // Close sort if open
+            if (document.getElementById('sort-overlay').classList.contains('open')) {
+                closeSort();
+                return;
+            }
             // Close fullscreen if open
             if (document.getElementById('fullscreen-viewer').classList.contains('open')) {
                 closeFullscreen();
@@ -269,7 +413,9 @@
             // Close search if open
             if (document.getElementById('search-overlay').classList.contains('open')) {
                 document.getElementById('search-input').value = '';
-                render(allRecipes);
+                currentRecipes = [...allRecipes];
+                sortRecipesWithPins();
+                render(currentRecipes);
                 closeSearch();
             }
         }
